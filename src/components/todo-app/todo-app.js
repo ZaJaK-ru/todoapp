@@ -4,32 +4,87 @@ import TaskList from '../task-list';
 import Footer from '../footer';
 
 export default class TodoApp extends Component {
+  maxId = 100;
+
   state = {
     tasksData: [
-      {
-        description: 'Completed task', 
-        created: 'Fri Oct 14 2022 01:32:56 GMT+0300',
-        completed: false, 
-        id: 1
-      },
-      {
-        description: 'Editing task', 
-        created: 'Fri Oct 14 2022 00:12:56 GMT+0300', 
-        completed: false, 
-        id: 2
-      },
-      {
-        description: 'Active task', 
-        created: 'Fri Oct 14 2022 01:14:56 GMT+0300', 
-        completed: false, 
-        id: 3
-      },
-    ]
+      this.createTask('Drink coffee'),
+      this.createTask('Make App'),
+      this.createTask('Have a lunch')
+    ],
+    tasksFilter: 'all'
+  }
+
+  createTask(description) {
+    return {
+      description: description, 
+      created: new Date(), 
+      completed: false,
+      editing: false, 
+      id: this.maxId++
+    }
+  } 
+
+  addTask = (text) => {
+    const newTask = this.createTask(text);
+
+    this.setState(({ tasksData }) => {
+      const newArray = [...tasksData, newTask];
+
+      return {
+        tasksData: newArray
+      }
+    })
+  }
+
+  editTask = (id) => {
+    this.setState(({ tasksData }) => {
+      const newArray = tasksData.map((task) => {
+        const { editing, ...data } = task
+
+        if (task.id === id) {
+          return {
+            ...data,
+            editing: !editing
+          }
+        }
+
+        return task;
+      });
+
+      return {
+        tasksData: newArray
+      }
+    });
+  }
+
+  saveEdit = (id, text) => {
+    console.log(id, text);
+
+    this.setState(({ tasksData }) => {
+      const newArray = tasksData.map((task) => {
+        const { editing, ...data } = task
+
+        if (task.id === id) {
+          return {
+            ...data,
+            description: text,
+            editing: !editing
+          }
+        }
+
+        return task;
+      });
+
+      return {
+        tasksData: newArray
+      }
+    });
   }
 
   deleteTask = (id) => {
     this.setState(({ tasksData }) => {
-      const idx = tasksData.findIndex((el) => el.id === id);
+      const idx = tasksData.findIndex((task) => task.id === id);
       
       const newArray = [
         ...tasksData.slice(0, idx),
@@ -44,17 +99,17 @@ export default class TodoApp extends Component {
 
   checkTask = (id) => {
     this.setState(({ tasksData }) => {
-      const newArray = tasksData.map((item) => {
-        const { completed, ...data } = item
+      const newArray = tasksData.map((task) => {
+        const { completed, ...data } = task
 
-        if (item.id === id) {
+        if (task.id === id) {
           return {
             ...data,
             completed: !completed
           }
         }
 
-        return item;
+        return task;
       });
 
       return {
@@ -63,19 +118,61 @@ export default class TodoApp extends Component {
     });
   }
 
+  setFilter = (newFilter) => {
+    this.setState( ({tasksFilter}) => {
+      return {
+        tasksFilter: newFilter
+      }
+    })
+  }
+
+  clearCompleted = () => {
+    this.setState(({ tasksData }) => {
+      const newArray = tasksData.filter(task => !task.completed);
+    
+      return {
+        tasksData: newArray
+      }
+    })
+  }
+
   render() {
+    const { tasksData, tasksFilter } = this.state;
+
+    const completedCount = tasksData
+      .filter((task) => !task.completed).length;  
+    
+    let filteredData = tasksData;
+
+    switch(tasksFilter) {
+      case 'active':
+        filteredData = tasksData.filter((task) => !task.completed);
+        break;
+      case 'completed':
+        filteredData = tasksData.filter((task) => task.completed);
+        break;
+      default:
+        filteredData = tasksData;
+    }
+
     return (
       <section className='todoapp'>
         <header className='header'>
           <h1>todos</h1>
-          <NewTaskForm />
+          <NewTaskForm onItemAdded = { this.addTask }/>
         </header>
         <section className='main'>
           <TaskList 
-            tasks = { this.state.tasksData }
+            tasks = { filteredData }
+            onEditing = { this.editTask }
             onDeleted = { this.deleteTask }
-            onChecked = { this.checkTask } />
-          <Footer />
+            onChecked = { this.checkTask }
+            saveEdit = { this.saveEdit } />
+          <Footer 
+            itemLeft = { completedCount } 
+            clearCompleted = { this.clearCompleted }
+            setFilter = { this.setFilter }
+            currentFilter = { tasksFilter } />
         </section>
       </section>
     );

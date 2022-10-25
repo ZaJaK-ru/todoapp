@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import Task from '../task';
+import EditTask from '../edit-task';
 
 export default class TaskList extends Component {
   render() {
-    const { tasks, onDeleted, onChecked } = this.props;
+    const { tasks, onEditing ,onDeleted, onChecked } = this.props;
 
     const elements = tasks.map((item) => {
-      const { id, completed, ...data } = item;
+      const { id, completed, editing, ...data } = item;
       let liStyle = '';
   
+      if (editing) liStyle += ' editing';
       if (completed) liStyle += ' completed';
 
       return (
@@ -16,9 +18,14 @@ export default class TaskList extends Component {
           <Task 
             { ...data }
             onDeleted = { () => { onDeleted(id) }}
-            onEditing = { () => { console.log('Edit'); }}
+            onEditing = { () => { onEditing(id) }}
             onChecked = { () => { onChecked(id) }} />
-          <input type='text' className='edit' />
+          { editing && (
+            <EditTask 
+              description = { item.description }
+              id = { id }
+              saveEdit = { this.props.saveEdit }/>
+          )}
         </li>
       );
     });
