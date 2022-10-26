@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export default class EditTask extends Component {
+  static propTypes = {
+    id: PropTypes.number.isRequired,
+    description: PropTypes.string.isRequired,
+    saveEdit: PropTypes.func.isRequired
+  }
+
   state = {
     text: this.props.description
   }
@@ -9,6 +16,10 @@ export default class EditTask extends Component {
     if (e.keyCode === 13) {
       this.props.saveEdit(this.props.id, this.state.text);
     }
+
+    if (e.keyCode === 27) {
+      this.props.saveEdit(this.props.id, this.props.description);
+    }
   }
 
   changeHandler = (e) => {
@@ -16,6 +27,7 @@ export default class EditTask extends Component {
   }
 
   render() {
+    
     return (
       <input 
         type='text' 

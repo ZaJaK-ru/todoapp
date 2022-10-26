@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export default class TasksFilter extends Component {
+  static propTypes = {
+    currentFilter: PropTypes.oneOf(['all', 'active', 'completed']),
+    setFilter: PropTypes.func.isRequired
+  }
+
   render() {
     const { currentFilter, setFilter } = this.props
 

@@ -59,8 +59,6 @@ export default class TodoApp extends Component {
   }
 
   saveEdit = (id, text) => {
-    console.log(id, text);
-
     this.setState(({ tasksData }) => {
       const newArray = tasksData.map((task) => {
         const { editing, ...data } = task

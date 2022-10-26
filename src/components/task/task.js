@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
 import { formatDistanceToNow } from 'date-fns';
+import PropTypes from 'prop-types';
 
 export default class Task extends Component {
+  static propTypes = {
+    description: PropTypes.string.isRequired,
+    created: PropTypes.instanceOf(Date).isRequired, 
+    onEditing: PropTypes.func.isRequired,
+    onDeleted: PropTypes.func.isRequired,
+    onChecked: PropTypes.func.isRequired,
+  }
 
   render() {
     const { description, created, onEditing, onDeleted, onChecked } = this.props; 
@@ -12,8 +20,12 @@ export default class Task extends Component {
                type='checkbox'
                onClick={ onChecked } />
         <label>
-          <span className='description'>{ description }</span>
-          <span className='created'>{ formatDistanceToNow(new Date(created)) + ' ago' }</span>
+          <span className='description'>
+            { description }
+          </span>
+          <span className='created'>
+            { `created ${ formatDistanceToNow(created) } ago` }
+          </span>
         </label>
         <button className='icon icon-edit'
                 onClick={ onEditing }></button>
