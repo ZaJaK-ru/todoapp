@@ -1,40 +1,38 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 
 export default class EditTask extends Component {
   static propTypes = {
     id: PropTypes.number.isRequired,
     description: PropTypes.string.isRequired,
-    saveEdit: PropTypes.func.isRequired
-  }
+    saveEdit: PropTypes.func.isRequired,
+  };
 
   state = {
-    text: this.props.description
-  }
+    // eslint-disable-next-line react/destructuring-assignment
+    text: this.props.description,
+  };
 
   onKeyDown = (e) => {
+    const { id, saveEdit, description } = this.props;
+    const { text } = this.state;
+
     if (e.keyCode === 13) {
-      this.props.saveEdit(this.props.id, this.state.text);
+      saveEdit(id, text);
     }
 
     if (e.keyCode === 27) {
-      this.props.saveEdit(this.props.id, this.props.description);
+      saveEdit(id, description);
     }
-  }
+  };
 
   changeHandler = (e) => {
     this.setState({ text: e.target.value });
-  }
+  };
 
   render() {
-    
-    return (
-      <input 
-        type='text' 
-        className='edit'
-        onKeyDown = { this.onKeyDown }
-        onChange = { this.changeHandler }
-        value = { this.state.text } />
-    )
+    const { text } = this.state;
+
+    return <input type="text" className="edit" onKeyDown={this.onKeyDown} onChange={this.changeHandler} value={text} />;
   }
 }
