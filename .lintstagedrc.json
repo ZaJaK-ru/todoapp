@@ -1,8 +1,0 @@
-{
-  "*.js": [
-    "format",
-    "lint:fix"
-  ],
-  "*.html": "format",
-  "*.css": "format"
-}
