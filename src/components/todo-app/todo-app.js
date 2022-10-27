@@ -17,8 +17,6 @@ export default class TodoApp extends Component {
   addTask = (text) => {
     const newTask = this.createTask(text);
 
-    console.log(newTask);
-
     this.setState(({ tasksData }) => {
       const newArray = [...tasksData, newTask];
 
