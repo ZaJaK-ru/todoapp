@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 
@@ -15,34 +16,43 @@ export default class TasksFilter extends Component {
     return (
       <ul className="filters">
         <li>
-          <button
-            className={currentFilter === 'all' ? 'selected' : ''}
-            onClick={() => {
-              setFilter('all');
-            }}
-          >
+          <label className={currentFilter === 'all' ? 'selected' : ''}>
+            <input
+              type="radio"
+              value="all"
+              name="filter"
+              onChange={() => {
+                setFilter('all');
+              }}
+            />
             All
-          </button>
+          </label>
         </li>
         <li>
-          <button
-            className={currentFilter === 'active' ? 'selected' : ''}
-            onClick={() => {
-              setFilter('active');
-            }}
-          >
+          <label className={currentFilter === 'active' ? 'selected' : ''}>
+            <input
+              type="radio"
+              value="active"
+              name="filter"
+              onChange={() => {
+                setFilter('active');
+              }}
+            />
             Active
-          </button>
+          </label>
         </li>
         <li>
-          <button
-            className={currentFilter === 'completed' ? 'selected' : ''}
-            onClick={() => {
-              setFilter('completed');
-            }}
-          >
+          <label className={currentFilter === 'completed' ? 'selected' : ''}>
+            <input
+              type="radio"
+              value="completed"
+              name="filter"
+              onChange={() => {
+                setFilter('completed');
+              }}
+            />
             Completed
-          </button>
+          </label>
         </li>
       </ul>
     );

@@ -131,18 +131,10 @@ export default class TodoApp extends Component {
 
     const completedCount = tasksData.filter((task) => !task.completed).length;
 
-    let filteredData = tasksData;
-
-    switch (tasksFilter) {
-      case 'active':
-        filteredData = tasksData.filter((task) => !task.completed);
-        break;
-      case 'completed':
-        filteredData = tasksData.filter((task) => task.completed);
-        break;
-      default:
-        filteredData = tasksData;
-    }
+    const filteredData = (items, filter) => {
+      if (filter === 'all') return items;
+      return items.filter(({ completed }) => (filter === 'active' ? !completed : completed));
+    };
 
     return (
       <section className="todoapp">
@@ -152,7 +144,7 @@ export default class TodoApp extends Component {
         </header>
         <section className="main">
           <TaskList
-            tasks={filteredData}
+            tasks={filteredData(tasksData, tasksFilter)}
             onEditing={this.editTask}
             onDeleted={this.deleteTask}
             onChecked={this.checkTask}

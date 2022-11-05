@@ -11,8 +11,11 @@
 	cursor: default;
 }
 
-.filters li button {
-	display: inline-block;
+.filters li input {
+	display: none;
+}
+
+.filters li label {
 	color: inherit;
 	margin: 3px;
 	padding: 3px 7px;
@@ -21,15 +24,15 @@
 	border-radius: 3px;
 }
 
-.filters li button:not(.selected) {
+.filters li label:not(.selected) {
 	cursor: pointer;
 }
 
-.filters li:hover button {
+.filters li:hover label {
 	border-color: rgba(175, 47, 47, 0.1);
 }
 
-.filters li button.selected {
+.filters li label.selected {
 	border-color: rgba(175, 47, 47, 0.2);
 }
 
