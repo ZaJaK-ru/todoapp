@@ -15,14 +15,37 @@ export default class Task extends Component {
   };
 
   render() {
-    const { description, created, onEditing, onDeleted, onChecked } = this.props;
+    const { description, created, timer, timerCounting, completed, onStartStop, onEditing, onDeleted, onChecked } =
+      this.props;
+
+    const timerFormat = (sec) => {
+      const minutes = String(Math.floor(sec / 60)).padStart(2, '0');
+      const seconds = String(sec - minutes * 60).padStart(2, '0');
+      return `${minutes}:${seconds}`;
+    };
+
+    const btnPlayPause = timerCounting ? (
+      <button className="icon icon-pause" onClick={onStartStop} />
+    ) : (
+      <button className="icon icon-play" onClick={onStartStop} />
+    );
+
+    const renderTimer =
+      timer > 0 ? (
+        <span className="description">
+          {btnPlayPause} {timerFormat(timer)}
+        </span>
+      ) : (
+        <span className="description">time is over</span>
+      );
 
     return (
       <div className="view">
-        <input className="toggle" type="checkbox" onClick={onChecked} />
+        <input className="toggle" type="checkbox" checked={completed} onChange={onChecked} />
         <label>
-          <span className="description">{description}</span>
-          <span className="created">{`created ${formatDistanceToNow(created)} ago`}</span>
+          <span className="title">{description}</span>
+          {renderTimer}
+          <span className="description">{`created ${formatDistanceToNow(created)} ago`}</span>
         </label>
         <button className="icon icon-edit" onClick={onEditing} />
         <button className="icon icon-destroy" onClick={onDeleted} />

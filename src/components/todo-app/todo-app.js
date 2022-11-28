@@ -10,12 +10,37 @@ export default class TodoApp extends Component {
   maxId = 100;
 
   state = {
-    tasksData: [this.createTask('Drink coffee'), this.createTask('Make App'), this.createTask('Have a lunch')],
+    tasksData: [
+      this.createTask('Drink coffee', 200),
+      this.createTask('Make App', 300),
+      this.createTask('Have a lunch', 400),
+    ],
     tasksFilter: 'all',
   };
 
-  addTask = (text) => {
-    const newTask = this.createTask(text);
+  componentDidMount() {
+    this.interval = setInterval(() => {
+      this.setState(({ tasksData }) => {
+        const newArray = tasksData.map((task) => {
+          if (task.timerCounting) {
+            const newTimer = task.timer > 0 ? task.timer - 1 : 0;
+            return { ...task, timer: newTimer };
+          }
+          return task;
+        });
+        return {
+          tasksData: newArray,
+        };
+      });
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  addTask = (label, timer) => {
+    const newTask = this.createTask(label, timer);
 
     this.setState(({ tasksData }) => {
       const newArray = [...tasksData, newTask];
@@ -116,9 +141,32 @@ export default class TodoApp extends Component {
     });
   };
 
-  createTask(description) {
+  timerStartStop = (id) => {
+    this.setState(({ tasksData }) => {
+      const newArray = tasksData.map((task) => {
+        const { timerCounting, ...data } = task;
+
+        if (task.id === id) {
+          return {
+            ...data,
+            timerCounting: !timerCounting,
+          };
+        }
+
+        return task;
+      });
+
+      return {
+        tasksData: newArray,
+      };
+    });
+  };
+
+  createTask(description, timer) {
     return {
       description,
+      timer,
+      timerCounting: false,
       created: new Date(),
       completed: false,
       editing: false,
@@ -149,6 +197,7 @@ export default class TodoApp extends Component {
             onDeleted={this.deleteTask}
             onChecked={this.checkTask}
             saveEdit={this.saveEdit}
+            timerStartStop={this.timerStartStop}
           />
           <Footer
             itemLeft={completedCount}

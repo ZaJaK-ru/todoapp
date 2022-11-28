@@ -24,7 +24,7 @@ export default class TaskList extends Component {
   };
 
   render() {
-    const { tasks, onEditing, onDeleted, onChecked, saveEdit } = this.props;
+    const { tasks, onEditing, onDeleted, onChecked, saveEdit, timerStartStop } = this.props;
 
     const elements = tasks.map((item) => {
       const { id, completed, editing, ...data } = item;
@@ -46,6 +46,10 @@ export default class TaskList extends Component {
             onChecked={() => {
               onChecked(id);
             }}
+            onStartStop={() => {
+              timerStartStop(id);
+            }}
+            completed={completed}
           />
           {editing && <EditTask description={item.description} id={id} saveEdit={saveEdit} />}
         </li>
